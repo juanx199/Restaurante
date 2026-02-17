@@ -6,7 +6,7 @@ import model.product.*;
 import view.*;
 
 
-public class controladorRestaurante {
+public class ControlMenu {
 
     private final vistaRestaurante vista;
     private MenuFactoryI factory;
@@ -14,16 +14,13 @@ public class controladorRestaurante {
     private PlatoPrincipalI plato;
     private BebidaI bebida;
     private PostreI postre;
-    private final ArrayList<MenuFactoryI> menuGourmet;
-    private final ArrayList<MenuFactoryI> menuVegetariano;
-    private final ArrayList<MenuFactoryI> menuSaludable;
+    private final ArrayList<Orden> historial;
 
-    public controladorRestaurante() {
+    public ControlMenu() {
         this.vista = new vistaRestaurante(this);
-        this.menuGourmet = new ArrayList<>();
-        this.menuVegetariano = new ArrayList<>();
-        this.menuSaludable = new ArrayList<>();
+        this.historial = new ArrayList<>();
     }
+        
 
     public void iniciar() {
         boolean salir = false;
@@ -38,17 +35,14 @@ public class controladorRestaurante {
                     vista.mostrarMenuSaludable();
                 }
                 case 3 -> {
-                    if(menuGourmet.isEmpty() && menuVegetariano.isEmpty() && menuSaludable.isEmpty()) {
+                    if(historial.isEmpty()) {
                         vista.mensajeMenuVacio();
                     } else {
                         vista.mensajeMenuOrdenado();
                     }
                     vista.mensajeMenusOrdenados();
                     vista.cantidadMenusOrdenados(cantidadMenus());
-                    mostrarMenuGourmet();
-
-                    mostrarMenuVegetariano();
-                    mostrarMenuSaludable();
+                    mostrarHistorial();
                 }
                 case 4 -> {
                     vista.cerrarPrograma();
@@ -86,42 +80,19 @@ public class controladorRestaurante {
         guardarMenu();
         vista.mensajeMenuGuardado();
     }
-
     public void guardarMenu(){
-        switch (factory.getClass().getSimpleName()) {
-            case "MenuVegetarianoFactory" -> menuVegetariano.add(factory);
-            case "MenuGourmetFactory" -> menuGourmet.add(factory);
-            case "MenuSaludableFactory" -> menuSaludable.add(factory);
-            default -> throw new IllegalArgumentException("Tipo de menú desconocido");
-        }
+        historial.add(new Orden(factory.getClass().getSimpleName(), entrada, plato, bebida, postre));
     }
 
-    public void mostrarMenuGourmet() {
-
-        for (MenuFactoryI menu : menuGourmet) {
-            vista.mostrarMenuCompleto(menu.crearEntrada().descripcion(), menu.crearPlatoPrincipal().descripcion(),
-                    menu.crearBebida().descripcion(), menu.crearPostre().descripcion());
-        }
-    }
-
-    public void mostrarMenuVegetariano() {
-
-        for (MenuFactoryI menu : menuVegetariano) {
-            vista.mostrarMenuCompleto(menu.crearEntrada().descripcion(), menu.crearPlatoPrincipal().descripcion(),
-                    menu.crearBebida().descripcion(), menu.crearPostre().descripcion());
-        }
-    }
-
-    public void mostrarMenuSaludable() {
-
-        for (MenuFactoryI menu : menuSaludable) {
-            vista.mostrarMenuCompleto(menu.crearEntrada().descripcion(), menu.crearPlatoPrincipal().descripcion(),
-                    menu.crearBebida().descripcion(), menu.crearPostre().descripcion());
+    public void mostrarHistorial() {
+        for (Orden orden : historial) {
+            vista.mostrarMenuCompleto(orden.getEntrada().descripcion(), orden.getPlato().descripcion(),
+                    orden.getBebida().descripcion(), orden.getPostre().descripcion());
         }
     }
 
     public int cantidadMenus() {
-        return menuGourmet.size() + menuVegetariano.size() + menuSaludable.size();
+        return historial.size();
     }
 
     public void mostrarMenu() {

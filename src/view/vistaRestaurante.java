@@ -1,14 +1,14 @@
 package view;
 
-import controller.controladorRestaurante;
+import controller.ControlMenu;
 import java.util.Scanner;
 
 public class vistaRestaurante {
 
     private final Scanner scanner;
-    private controladorRestaurante controlador;
+    private ControlMenu controlador;
 
-    public vistaRestaurante(controladorRestaurante controlador) {
+    public vistaRestaurante(ControlMenu controlador) {
         this.controlador = controlador;
         this.scanner = new Scanner(System.in);
     }
@@ -45,11 +45,11 @@ public class vistaRestaurante {
         System.out.println("Opción no válida. Por favor, intente de nuevo.");
     }
 
-    public controladorRestaurante getControlador() {
+    public ControlMenu getControlador() {
         return controlador;
     }
 
-    public void setControlador(controladorRestaurante controlador) {
+    public void setControlador(ControlMenu controlador) {
         this.controlador = controlador;
     }
 
